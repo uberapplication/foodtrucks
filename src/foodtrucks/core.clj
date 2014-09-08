@@ -86,8 +86,6 @@
                           ((filter-param :id) parsed-params)
                           (limit-parameter parsed-params)
                           join-query-components)]
-    (println sql)
-    (println sqlParams)
     (j/query
       conn
       (concat [sql] sqlParams)

@@ -33,7 +33,6 @@
         filter-fn (filter-param :foo)
         params {:foo "fooValue"}
         result (filter-fn components params)]
-    (println result)
     (testing "If a filtering parameter is supplied, the appropriate WHERE clause is added"
       (is (= result {:where ["foo = :foo"] :params {:foo "fooValue"}})))
     (testing "If no parameter is supplied, the query is unmodified"

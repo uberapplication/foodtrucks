@@ -29,8 +29,6 @@
                                    :baz "bazParam" }
                          }
             [sql params] (join-query-components test-query)]
-        (println sql)
-        (println params)
         (is (= sql "select bar as foo, baz from table where (foo = ?) and (baz = ?) order by order1, order2 offset ? limit ?"))
         (is (= params ["fooParam" "bazParam" 40 20]))))
 
