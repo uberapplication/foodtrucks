@@ -1,6 +1,5 @@
-# Web Coding Challenge
-
-This documents a prototype of the Food Trucks project. The technical track chosen is "backend", mostly because
+# Food Trucks
+This document describes a prototype of the Food Trucks project. The technical track chosen is "backend", mostly because
 I did not have enough time to write a particularly nice front end as well, although the frontend is fully functional.
 
 The result may be viewed here: [Food Truck Finder demo](http://food-truck-finder3.elasticbeanstalk.com/index.html)
@@ -19,20 +18,20 @@ I find Clojure interesting for a number of reasons:
 
  - Its a dynamic, strongly typed language, but with an [optional type sytem](http://typedclojure.org/)
  - It is a functional language - all the built in datastructures are [persistent](http://clojure.org/data_structures)
- - It is a LISP, and as such has a very powerful [macro facility](http://clojure.org/macros)
+ - It is a LISP, and as such has a powerful [macro facility](http://clojure.org/macros)
  - Clojure strongly emphasizes [simplicity](http://www.drdobbs.com/architecture-and-design/the-clojure-philosophy/240150710).
  - It has some very interesting [concurrency features](http://clojure.org/concurrent_programming), including 
  [core.async](https://github.com/clojure/core.async), a library implementing CSP using lightweight cooperative threading
  - It can be hosted on either the JVM or [JavaScript](https://github.com/clojure/clojurescript)
  - It is  performant compared to other dynamic languages, and provides many optimization options for performance hot spots
- - It has a very simple and elegant interoperability with the host platform, so it is very easy to use existing JAVA or 
+ - It has simple and elegant interoperability with the host platform, so it is very easy to use existing JAVA or 
  JavaScript libraries
  
-I decided to use PostgreSQL as database. The reason behind this decision is that it is familiar to me (trying out a new
-language is challenging enough!), and that it supports
+I decided to use PostgreSQL as database. The reason behind this decision is that it is familiar to me (trying out a 
+somewhat unfamilliar language is challenging enough!), and that it supports
 [GIS](http://postgis.net/) features such spatial indexes for finding objects near a particular geographic location.
 
-I decided not to use any complex frameworks for the web application. I use [ring](https://github.com/ring-clojure/ring),
+I decided not to use any complex high-level frameworks for the web application. I use [ring](https://github.com/ring-clojure/ring),
  which is the clojure equivalent of NodeJS [Connect](https://github.com/senchalabs/connect), and 
  [Compojure](https://github.com/weavejester/compojure) which is the clojure equivalent for NodeJS 
  [Express](http://expressjs.com/). 
@@ -42,9 +41,9 @@ I used JAVA JDBC for connecting to the PostgreSQL. JDBC is an extremely unpleasa
 
 A high-level library (such as an ORM) is not used for accessing the database. JAVA ORMs such as 
 [Hibernate](http://hibernate.org) is problematic enough in JAVA, and completely unsuitable for Clojure. There 
-[are](http://sqlkorma.com/) [some](https://github.com/jkk/honeysql) [high](https://github.com/r0man/sqlingvo) level 
-Clojure libraries for dealing with SQL databases. Of these, [SQLingvo](https://github.com/r0man/sqlingvo)
- seems suitable for this project and could probably have been used with success.
+are some high-level 
+Clojure libraries ([1](http://sqlkorma.com/), [2](https://github.com/jkk/honeysql), [3](https://github.com/r0man/sqlingvo)) for dealing with SQL databases. Of these, [SQLingvo](https://github.com/r0man/sqlingvo)
+ seems suitable for this project and could probably have been used with success (and less custom code) as a result.
  
 The de-facto build tool of choice for clojure applications is [Leiningen](https://github.com/technomancy/leiningen). 
 Leiningen is a declarative build system similar to JAVAs [maven](http://maven.apache.org/), but it seems a lot more 
@@ -66,7 +65,7 @@ language to learn to use effectively for a web application:
  for my entire professional career, but it might also be partially due to the lack of visual variation in the clojure 
  syntax.
  - It is necessary learn a moderately large [vocabulary](https://clojure.github.io/clojure/clojure.core-api.html) of
- basic functions in order to work effectively with the clojure's persistent datastructures - figuring out
+ basic functions in order to work effectively with the Clojure's persistent datastructures - figuring out
  which basic function to use for a particular task is not easy.
  - Even [editing](https://cursiveclojure.com/userguide/paredit.html) clojure code the idiomatic way has a learning curve!
  
@@ -77,6 +76,7 @@ The food trucks web app implements a REST API with a single HTTP resource `/food
  - `x`, `y`: The resulting list of food trucks will be ordered according to the distance to `(x,y)`, where `x` is the 
  longitude and `y` is the latitude.
  - `limit`: Only the specified number of food trucks will be returned.
+ - `status`: Only return food trucks with the given status.
  
 The resource returns a JSON-array of objects, formatted like this:
 
@@ -117,8 +117,8 @@ like this:
     :id { :type :integer }}
 ```
 
-The advantage of this approach is that the encoded information is highly readable, and the information can be used in
-may ways. For example, the information above could be used to generate or verify API documentation.
+The advantage of this approach is that the encoded information is easily readable and concise, and the information can 
+be used in many ways. For example, the information above could be used to generate or verify API documentation.
 
 ### The foodtrucks.sql namespace
 The `foodtrucks.sql` namespace provides som basic functions for manipulating SQL strings. It is quite limited,
@@ -188,7 +188,7 @@ Execute the script `scripts/load-data.clj` to load data into the database, subst
 the correct db username and password in the database connection URI below: 
 
 ```bash
-DB_URI="jdbc:postgresql://localhost/foodtrucks?user=<db-user>&password=<db-password> lein exec -p scripts/load-data.clj data/Mobile_Food_Facility_Permit.csv  
+DB_URI="jdbc:postgresql://localhost/foodtrucks?user=<db-user>&password=<db-password>" lein exec -p scripts/load-data.clj data/Mobile_Food_Facility_Permit.csv  
 ```
 
 ### Run the tests
@@ -232,4 +232,7 @@ The following would have to be added before this prototype could be considered p
  - The script to load data into the database is very slow, and would not
  work for large amounts of data. The script could be rewritten using the PostgresSQL 
  [COPY](http://www.postgresql.org/docs/9.3/static/sql-copy.html) feature for much better performance.
-  
+ 
+## Things I would do differently
+ - I would probably use a 3rd party tool ([SQLingvo](https://github.com/r0man/sqlingvo)) for generating
+ SQL strings
